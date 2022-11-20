@@ -1,0 +1,53 @@
+version: "3.1"
+services:
+    www:
+        build: .
+        ports: 
+            - "80:80"
+        volumes:
+            - ./www:/var/www/html/
+        depends_on:
+            - db
+    db:
+        image: mysql
+        command: --default-authentication-plugin=mysql_native_password
+        environment:
+            MYSQL_ROOT_PASSWORD: test 
+            MYSQL_DATABASE: db
+            MYSQL_USER: user
+            MYSQL_PASSWORD: test
+        ports: 
+            - "3306:3306"        
+        volumes:
+            - ./config/mysql:/etc/mysql/conf.d
+            - persistent:/var/lib/mysql
+    phpmyadmin:
+        image: phpmyadmin/phpmyadmin
+        ports:
+            - 8000:80
+        volumes:
+            - ./config/phpmyadmin/config.user.inc.php:/etc/phpmyadmin/config.user.inc.php
+        environment:
+            PMA_HOST: 'db'
+            PMA_PORT: '3306'
+            PMA_PMADB: 'phpmyadmin'
+            PMA_CONTROLUSER: 'phpmyadmin'
+            PMA_CONTROLPASS: 'z5NtECaFM3qbLIti'
+        depends_on:
+            - db
+    phpbb:
+        image: docker.io/bitnami/phpbb:3
+        ports:
+            - 8080:8080
+        volumes:
+            - ./phpbb:/bitnami/phpbb
+        environment:
+            PHPBB_DATABASE_HOST: 'db'
+            PHPBB_DATABASE_PORTNUMBER: '3306'
+            PHPBB_DATABASE_USER: 'phpbb'
+            PHPBB_DATABASE_NAME: 'phpbb'
+            PHPBB_DATABASE_PASSWORD: 'fwFnos8j_ban8jzQ'
+        depends_on:
+            - db
+volumes:
+    persistent:
