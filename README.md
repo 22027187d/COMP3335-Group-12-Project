@@ -1,3 +1,5 @@
+Group 12
+
 Docker container with Apache, MySql 8.0, PhpMyAdmin and PhpBB forum (Pre-Configured)
 
 Installation Process:
